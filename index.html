@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suivi candidatures — Démo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-dot">W</div>
+      <div>
+        <h1>Suivi candidatures</h1>
+        <p>Version web inspirée du classeur Excel V31</p>
+      </div>
+    </div>
+    <div class="demo-badge">Mode démonstration · données anonymisées</div>
+  </header>
+
+  <nav class="tabs" aria-label="Onglets du suivi">
+    <button class="tab active" data-tab="dashboard">Dashboard</button>
+    <button class="tab" data-tab="candidatures">Candidatures</button>
+    <button class="tab" data-tab="entretiens">Entretiens</button>
+    <button class="tab" data-tab="gmail">Référentiel Gmail</button>
+    <button class="tab" data-tab="statistiques">Statistiques</button>
+    <button class="tab" data-tab="qualite">Contrôles qualité</button>
+    <button class="tab" data-tab="historique">Historique versions</button>
+    <button class="tab" data-tab="parametres">Paramètres</button>
+    <button class="tab" data-tab="audit">Audit V31</button>
+  </nav>
+
+  <main class="page-shell">
+    <section id="dashboard" class="panel-view active-view"></section>
+    <section id="candidatures" class="panel-view"></section>
+    <section id="entretiens" class="panel-view"></section>
+    <section id="gmail" class="panel-view"></section>
+    <section id="statistiques" class="panel-view"></section>
+    <section id="qualite" class="panel-view"></section>
+    <section id="historique" class="panel-view"></section>
+    <section id="parametres" class="panel-view"></section>
+    <section id="audit" class="panel-view"></section>
+  </main>
+
+  <footer>
+    Projet d'apprentissage GitHub · Les données nominatives du classeur original ne sont pas publiées.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
