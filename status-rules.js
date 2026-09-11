@@ -63,6 +63,15 @@ function srApplyStatusRules() {
 srConfigureStatuses();
 cmActionForStatus = srActionForStatus;
 
+const srBaseOpenModal = cmOpenModal;
+cmOpenModal = function(applicationId = '') {
+  srBaseOpenModal(applicationId);
+  if (!applicationId) {
+    const statusField = document.querySelector('#candidate-status-field');
+    if (statusField) statusField.value = SR_WAITING_STATUS;
+  }
+};
+
 const srBaseRefreshViews = cmRefreshViews;
 cmRefreshViews = function() {
   const changed = srApplyStatusRules();
