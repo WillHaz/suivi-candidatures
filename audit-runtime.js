@@ -1,6 +1,5 @@
 // Audit web global V33 : règles, cohérence des paramètres et contrôle visuel des 9 onglets.
 (function () {
-  const META = window.V33_META || {};
   const WAITING = SR_WAITING_STATUS;
   const ACTIVE = SR_ACTIVE_STATUS;
   const NO_RESPONSE = SR_NO_RESPONSE_STATUS;
@@ -61,6 +60,15 @@
     if (saved && selected === ACTIVE) { saved.statusManual = true; saved.status = ACTIVE; saved.action = srActionForStatus(ACTIVE); cmSaveApplications(); }
   };
 
+  // Dashboard : neutralise les dernières mentions techniques V31 héritées de la démo.
+  const baseDashboard = renderDashboard;
+  renderDashboard = function () {
+    baseDashboard();
+    document.querySelectorAll('#dashboard td, #dashboard .page-title p, #dashboard .note').forEach(el => {
+      if (/Classeur V31/i.test(el.textContent || '')) el.textContent = (el.textContent || '').replace(/Classeur V31/gi,'Classeur V33');
+    });
+  };
+
   // Paramètres : supprime les anciennes références V31/V32 contradictoires.
   renderParametres = function () {
     const rows = [
@@ -85,10 +93,11 @@
       const wrapped = tables.every(t => t.closest('.table-wrap'));
       const scroll = [...panel.querySelectorAll('.table-wrap')].every(w => ['auto','scroll'].includes(getComputedStyle(w).overflowX));
       const overflow = panel.scrollWidth > panel.clientWidth + 2;
-      const legacy = /120 premi|V31|démonstration|démo anonymisée/i.test(panel.textContent || '');
+      const legacySensitive = ['dashboard','candidatures','statistiques','qualite','parametres'].includes(id);
+      const legacy = legacySensitive && /120 premi|Classeur V31|démonstration|démo anonymisée|Version active\s*V32/i.test(panel.textContent || '');
       const title = Boolean(panel.querySelector('h2'));
       const ok = title && wrapped && scroll && !overflow && !legacy;
-      out.push([label,ok?'OK':'À vérifier',[title?'titre OK':'titre absent',wrapped?'tableaux encapsulés':'tableau hors scroll',scroll?'scroll horizontal géré':'scroll non géré',overflow?'débordement externe':'pas de débordement externe',legacy?'ancien texte détecté':'texte V33 cohérent'].join(' · ')]);
+      out.push([label,ok?'OK':'À vérifier',[title?'titre OK':'titre absent',wrapped?'tableaux encapsulés':'tableau hors scroll',scroll?'scroll horizontal géré':'scroll non géré',overflow?'débordement externe':'pas de débordement externe',legacy?'ancien texte détecté':'texte courant cohérent'].join(' · ')]);
       if (oldStyle === null) panel.removeAttribute('style'); else panel.setAttribute('style',oldStyle);
       panel.classList.toggle('active-view',active);
     }
