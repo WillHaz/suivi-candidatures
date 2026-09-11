@@ -1,0 +1,20 @@
+/* Audit visuel V33 */
+.page-shell { max-width: 1840px; margin: 0 auto; width: 100%; }
+.table-wrap { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+#candidatures .table-wrap, #entretiens .table-wrap, #gmail .table-wrap { max-height: 72vh; overflow: auto; }
+#candidatures table { min-width: 1900px; }
+#entretiens table { min-width: 1500px; }
+#gmail table { min-width: 1650px; }
+th, td { max-width: 360px; overflow-wrap: anywhere; }
+th { z-index: 2; }
+#candidatures th:first-child, #candidatures td:first-child { position: sticky; left: 0; z-index: 3; background: white; box-shadow: 1px 0 0 var(--line); }
+#candidatures th:first-child { background: var(--blue-2); z-index: 4; }
+#candidatures tr:nth-child(even) td:first-child { background: #f8fbff; }
+.status-pill { white-space: normal; line-height: 1.2; }
+.bar-row > div:first-child { min-width: 0; overflow-wrap: anywhere; }
+#qualite .table-wrap { margin-top: 4px; }
+@media (max-width: 900px) {
+  .page-shell { padding-left: 10px; padding-right: 10px; }
+  .card.pad { padding: 14px; }
+  .section-header { align-items: flex-start; flex-direction: column; gap: 4px; }
+}
