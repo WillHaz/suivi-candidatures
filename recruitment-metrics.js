@@ -54,7 +54,6 @@
     return counts;
   }
 
-  // Exposé pour les contrôles qualité et les évolutions futures.
   window.recruitmentCompanyCount = uniqueRecruitmentCount;
   window.recruitmentCompanies = recruitmentCompanies;
 
@@ -135,12 +134,24 @@
       <div class="card pad" style="margin-top:18px"><h3>Suivi mensuel</h3>${table(['Mois','Candidatures','Sociétés en recrutement','Taux sociétés / candidatures'], [...monthly.map(([m,a,e,r])=>({cells:[m,a,e,formatPct(r)]})),{__class:'total',cells:['TOTAL',total,recruitmentCount,formatPct(pct(recruitmentCount,total))]}], 'table-orange')}</div>`;
   };
 
+  const baseEntretiens = renderEntretiens;
+  renderEntretiens = function () {
+    baseEntretiens();
+    const intro = document.querySelector('#entretiens .page-title p');
+    if (intro) intro.textContent = `${events.length} lignes détaillées de suivi / entretiens issues du classeur ${CONFIG.version}. Elles correspondent à ${uniqueRecruitmentCount()} sociétés distinctes en recrutement.`;
+  };
+
   const baseAudit = renderAudit;
   renderAudit = function () {
     baseAudit();
     const title = document.querySelector('#audit .page-title');
     if (title) {
-      title.insertAdjacentHTML('afterend', `<div class="card pad audit-reference-card" style="margin-bottom:18px"><div class="section-header"><h3>Référence du fichier source</h3><small>traçabilité</small></div>${table(['Référence','Date','Classeur'], [{cells:['Dernière référence Excel', esc(CONFIG.updatedAt), `Classeur ${esc(CONFIG.version)}`]}], 'table-green')}</div>`);
+      const recruitmentCount = uniqueRecruitmentCount();
+      title.insertAdjacentHTML('afterend', `<div class="card pad audit-reference-card" style="margin-bottom:18px"><div class="section-header"><h3>Référence et métriques source</h3><small>traçabilité</small></div>${table(['Référence','Valeur','Lecture'], [
+        {cells:['Dernière référence Excel', esc(CONFIG.updatedAt), `Classeur ${esc(CONFIG.version)}`]},
+        {cells:['Lignes de suivi / entretiens', events.length, 'Détail brut du classeur']},
+        {cells:['Événements recrutement', recruitmentCount, 'Sociétés distinctes · 1 société = 1 événement']}
+      ], 'table-green')}</div>`);
     }
   };
 
@@ -150,7 +161,7 @@
     const firstTable = document.querySelector('#qualite .card .table-wrap tbody');
     if (firstTable) {
       const count = uniqueRecruitmentCount();
-      firstTable.insertAdjacentHTML('beforeend', `<tr><td>Événements recrutement — sociétés distinctes</td><td>${count}</td><td>${count}</td><td><span class="quality-ok">OK</span></td><td>1 société = 1 événement ; ${events.length} lignes détaillées restent disponibles dans Entretiens</td></tr>`);
+      firstTable.insertAdjacentHTML('beforeend', `<tr><td>Événements recrutement — sociétés distinctes</td><td>${count}</td><td>105</td><td><span class="${count === 105 ? 'quality-ok' : 'quality-warn'}">${count === 105 ? 'OK' : 'À vérifier'}</span></td><td>1 société = 1 événement ; ${events.length} lignes détaillées restent disponibles dans Entretiens</td></tr>`);
     }
   };
 
@@ -166,12 +177,13 @@
           tr.children[1].textContent = String(events.length);
         }
       });
-      tbody.insertAdjacentHTML('beforeend', `<tr><td>Définition événement recrutement</td><td>1 société distincte = 1 événement, quel que soit le nombre d’entretiens</td></tr>`);
+      tbody.insertAdjacentHTML('beforeend', `<tr><td>Événements recrutement de référence</td><td>${uniqueRecruitmentCount()} sociétés distinctes</td></tr><tr><td>Définition événement recrutement</td><td>1 société distincte = 1 événement, quel que soit le nombre d’entretiens</td></tr>`);
     }
   };
 
   renderDashboard();
   renderStatistiques();
+  renderEntretiens();
   renderParametres();
   renderAudit();
   renderQualite();
