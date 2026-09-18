@@ -41,7 +41,7 @@
   events.splice(0, events.length, ...window.currentBuildEvents());
   gmailRefs.splice(0, gmailRefs.length, ...rawGmail.map((row,index) => {
     const [date,company,role,city,department,channel,companyType,size,activity,salaryMin,salaryMax,contract,subject] = row;
-    return {id:`MAIL-${CONFIG.version || 'V35'}-${String(index+1).padStart(4,'0')}`,date,company,role,city,department,channel,companyType,size,activity,salaryMin,salaryMax,contract,subject};
+    return {id:`MAIL-${meta.version || 'V35'}-${String(index+1).padStart(4,'0')}`,date,company,role,city,department,channel,companyType,size,activity,salaryMin,salaryMax,contract,subject};
   }));
 
   CONFIG.version = meta.version || 'V35';
