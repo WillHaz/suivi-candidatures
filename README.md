@@ -1,37 +1,29 @@
-# Suivi candidatures — version web V34
+# Suivi candidatures — application web
 
-Application web construite à partir du classeur Excel de suivi de candidatures et publiée avec GitHub Pages.
+Version web du suivi de candidatures, synchronisée avec le classeur **V35 du 16/09/2026**.
 
-## Version courante
+## Base de référence
 
-- Version : **V34**
-- Date : **11/09/2026**
-- Candidatures : **594**
-- Événements recrutement / contacts : **246**
-- Références Gmail : **255**
+- 601 candidatures
+- 253 lignes de suivi / interactions dans l’onglet Entretiens
+- 262 références Gmail
+- 112 sociétés distinctes ayant au moins un événement de recrutement
+- règle automatique : une candidature sans réponse reste **En cours** pendant 14 jours puis passe en **Aucune réponse** à J+15
+- une société compte pour **1 événement recrutement**, quel que soit le nombre d’entretiens
 
-La V34 conserve les 594 candidatures de la V33 et enrichit l’onglet Entretiens avec 43 événements ajoutés ou requalifiés afin de rétablir la cohérence mensuelle de juillet, août et septembre 2026.
+## Lecture des entretiens
 
-## Onglets
+Les 253 lignes de suivi ne sont pas toutes des entretiens formels. L’application distingue :
+- les entretiens formels ;
+- les échanges téléphoniques ;
+- les interactions légères (accusés, transmissions, relances, contacts réseau).
 
-- Dashboard
-- Candidatures
-- Entretiens
-- Référentiel Gmail
-- Statistiques
-- Contrôles qualité
-- Historique versions
-- Paramètres
-- Audit V34
+Les indicateurs sont calculés dynamiquement depuis les données chargées.
 
-## Règles métier principales
+## Données et stockage
 
-Une candidature sans réponse reste **En cours** pendant moins de 15 jours. À partir de J+15 sans réponse, elle passe automatiquement en **Aucune réponse**. Le statut **Active — processus engagé** est réservé à un échange téléphonique ou à un entretien réellement engagé ; les accusés de réception, transmissions et relances ajoutés en V34 restent des événements de suivi et ne rendent pas automatiquement la candidature active.
+Les données source sont publiées dans le dépôt. Les modifications réalisées directement dans l’application sont enregistrées localement dans le navigateur via **Local Storage / Stockage local**.
 
-## Contrôle qualité
+## GitHub Pages
 
-L’onglet Contrôles qualité vérifie les volumes de référence, la cohérence de la règle des 15 jours, les statuts actifs, les doublons stricts et le rendu visuel des 9 onglets.
-
-## Utilisation GitHub
-
-Le projet suit le workflow **Branch / Branche → Commit / Engagement → Pull Request / Demande de fusion → Merge / Fusionner**. Le site est ensuite déployé via GitHub Pages.
+Le site est publié depuis la branche `main / principal`.
