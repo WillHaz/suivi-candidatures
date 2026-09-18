@@ -161,7 +161,7 @@
     const firstTable = document.querySelector('#qualite .card .table-wrap tbody');
     if (firstTable) {
       const count = uniqueRecruitmentCount();
-      firstTable.insertAdjacentHTML('beforeend', `<tr><td>Événements recrutement — sociétés distinctes</td><td>${count}</td><td>105</td><td><span class="${count === 105 ? 'quality-ok' : 'quality-warn'}">${count === 105 ? 'OK' : 'À vérifier'}</span></td><td>1 société = 1 événement ; ${events.length} lignes détaillées restent disponibles dans Entretiens</td></tr>`);
+      firstTable.insertAdjacentHTML('beforeend', `<tr><td>Événements recrutement — sociétés distinctes</td><td>${count}</td><td>${CONFIG.totalRecruitmentCompaniesExpected}</td><td><span class="${count === CONFIG.totalRecruitmentCompaniesExpected ? 'quality-ok' : 'quality-warn'}">${count === CONFIG.totalRecruitmentCompaniesExpected ? 'OK' : 'À vérifier'}</span></td><td>1 société = 1 événement ; ${events.length} lignes détaillées restent disponibles dans Entretiens</td></tr>`);
     }
   };
 
