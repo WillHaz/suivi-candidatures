@@ -1,10 +1,10 @@
-// Ajustements d'interface pour la version courante V34.
+// Ajustements d'interface pour la version courante.
 (function () {
   const baseDashboard = renderDashboard;
   renderDashboard = function () {
     baseDashboard();
     const title = document.querySelector('#dashboard .page-title p');
-    if (title) title.textContent = `Base V34 importée le ${CONFIG.updatedAt} · règle automatique des 15 jours.`;
+    if (title) title.textContent = `Base ${CONFIG.version} importée le ${CONFIG.updatedAt} · règle automatique des 15 jours.`;
   };
 
   const baseCandidates = renderCandidatures;
@@ -28,16 +28,16 @@
     }
     const note=[...document.querySelectorAll('#candidatures .small')].find(e=>e.textContent.includes('Affichage limité'));
     if (note) note.textContent=`Affichage complet : ${filtered.length} ligne(s) correspondant aux filtres.`;
-    const reset=document.querySelector('#reset-candidates'); if (reset) reset.textContent='Réinitialiser depuis V34';
+    const reset=document.querySelector('#reset-candidates'); if (reset) reset.textContent=`Réinitialiser depuis ${CONFIG.version}`;
     const intro=document.querySelector('#candidatures .page-title p');
-    if (intro && !intro.textContent.includes('V34')) intro.insertAdjacentHTML('beforeend',' <strong>Source :</strong> classeur V34 du 11/09/2026.');
+    if (intro && !intro.textContent.includes(CONFIG.version)) intro.insertAdjacentHTML('beforeend',` <strong>Source :</strong> classeur ${cmEscape(CONFIG.version)} du ${cmEscape(CONFIG.updatedAt)}.`);
   };
 
   cmResetDemo = function () {
-    if (!window.confirm('Réinitialiser les modifications locales et revenir aux 594 candidatures de référence V34 ?')) return;
+    if (!window.confirm(`Réinitialiser les modifications locales et revenir aux ${CONFIG.totalApplicationsExpected} candidatures de référence ${CONFIG.version} ?`)) return;
     applications.splice(0,applications.length,...window.currentBuildApplications());
     localStorage.removeItem('suivi-candidatures-local-v1');
-    localStorage.setItem('suivi-candidatures-data-version','V34');
+    localStorage.setItem('suivi-candidatures-data-version',CONFIG.version);
     Object.assign(currentApplicationFilter,{query:'',status:'Tous',month:'Tous',source:'Tous'});
     cmRefreshViews();
   };

@@ -1,9 +1,9 @@
-// Charge la version courante V34 : candidatures/Gmail inchangés depuis V33, événements et métadonnées V34.
+// Charge la version courante V35 à partir de la base V34 + ajouts du fichier du 16/09/2026.
 (function () {
-  const meta = window.V34_META || {};
-  const rawApplications = window.V33_APPLICATION_ROWS || [];
-  const rawEvents = window.V34_EVENT_ROWS || [];
-  const rawGmail = window.V33_GMAIL_ROWS || [];
+  const meta = window.V35_META || window.V34_META || {};
+  const rawApplications = [...(window.V33_APPLICATION_ROWS || []), ...(window.V35_APPLICATION_ROWS || [])];
+  const rawEvents = [...(window.V34_EVENT_ROWS || []), ...(window.V35_EVENT_ROWS || [])];
+  const rawGmail = [...(window.V33_GMAIL_ROWS || []), ...(window.V35_GMAIL_ROWS || [])];
 
   function esc(value) {
     return String(value ?? '')
@@ -41,14 +41,19 @@
   events.splice(0, events.length, ...window.currentBuildEvents());
   gmailRefs.splice(0, gmailRefs.length, ...rawGmail.map((row,index) => {
     const [date,company,role,city,department,channel,companyType,size,activity,salaryMin,salaryMax,contract,subject] = row;
-    return {id:`MAIL-V34-${String(index+1).padStart(4,'0')}`,date,company,role,city,department,channel,companyType,size,activity,salaryMin,salaryMax,contract,subject};
+    return {id:`MAIL-${meta.version || 'V35'}-${String(index+1).padStart(4,'0')}`,date,company,role,city,department,channel,companyType,size,activity,salaryMin,salaryMax,contract,subject};
   }));
 
-  CONFIG.version = meta.version || 'V34';
-  CONFIG.updatedAt = meta.updatedAt || '11/09/2026';
-  CONFIG.sourceBase = meta.sourceBase || 'V33 — audit intégral au 11/09/2026';
-  CONFIG.totalApplicationsExpected = meta.expectedApplications || 594;
-  CONFIG.totalEventsExpected = meta.expectedEvents || 246;
+  CONFIG.version = meta.version || 'V35';
+  CONFIG.updatedAt = meta.updatedAt || '16/09/2026';
+  CONFIG.sourceBase = meta.sourceBase || 'V34 — cohérence événements au 11/09/2026';
+  CONFIG.totalApplicationsExpected = meta.expectedApplications || 601;
+  CONFIG.totalEventsExpected = meta.expectedEvents || 253;
+  CONFIG.totalGmailExpected = meta.expectedGmail || 262;
+  CONFIG.totalRecruitmentCompaniesExpected = meta.expectedRecruitmentCompanies || 112;
+  CONFIG.formalInterviewsExpected = meta.expectedFormalInterviews || 101;
+  CONFIG.phoneExchangesExpected = meta.expectedPhoneExchanges || 88;
+  CONFIG.substantiveInteractionsExpected = meta.expectedSubstantiveInteractions || 189;
   CONFIG.newLinesV31Expected = 0;
 
   const statusOrder = ['Aucune réponse','Refus automatique / email','Refus après échange téléphonique','Refus après entretien RH','Refus après entretien Manager/Direction','Refus après entretien final','Candidature reçue / en cours'];
@@ -70,19 +75,22 @@
 
   renderEntretiens = function () {
     const rows = events.map(e => ({cells:[esc(e.applicationId),esc(e.date),esc(e.company),esc(e.role),esc(e.type),esc(e.mode),esc(e.outcome),esc(e.comment),esc(e.source),esc(e.next),esc(e.month)]}));
-    document.querySelector('#entretiens').innerHTML = `<div class="page-title"><h2>Entretiens</h2><p>${events.length} événements issus du classeur V34, dont le rééquilibrage de juillet, août et septembre.</p></div>${table(['ID candidature','Date événement','Entreprise','Poste','Type événement','Modalité','Issue','Commentaire','Source / preuve','Suite logique','Mois événement'],rows)}`;
+    document.querySelector('#entretiens').innerHTML = `<div class="page-title"><h2>Entretiens</h2><p>${events.length} lignes détaillées de suivi issues du classeur ${esc(CONFIG.version)}.</p></div>${table(['ID candidature','Date événement','Entreprise','Poste','Type événement','Modalité','Issue','Commentaire','Source / preuve','Suite logique','Mois événement'],rows)}`;
   };
   renderGmail = function () {
     const rows = gmailRefs.map(g => ({cells:[esc(g.date),esc(g.company),esc(g.role),esc(g.city),esc(g.department),esc(g.channel),esc(g.companyType),esc(g.size),esc(g.activity),esc(g.salaryMin),esc(g.salaryMax),esc(g.contract),esc(g.subject)]}));
-    document.querySelector('#gmail').innerHTML = `<div class="page-title"><h2>Référentiel Gmail</h2><p>${gmailRefs.length} références ; contenu inchangé entre V33 et V34.</p></div>${table(['Date email','Entreprise','Poste / objet détecté','Ville','Département','Canal','Type société','Taille indicative','Activité','Salaire min k€','Salaire max k€','Contrat','Objet Gmail'],rows)}`;
+    document.querySelector('#gmail').innerHTML = `<div class="page-title"><h2>Référentiel Gmail</h2><p>${gmailRefs.length} références intégrées jusqu’au ${esc(CONFIG.updatedAt)}.</p></div>${table(['Date email','Entreprise','Poste / objet détecté','Ville','Département','Canal','Type société','Taille indicative','Activité','Salaire min k€','Salaire max k€','Contrat','Objet Gmail'],rows)}`;
   };
   renderHistorique = function () {
     const rows = (meta.history || []).map(r => ({cells:r.map(esc)}));
-    document.querySelector('#historique').innerHTML = `<div class="page-title"><h2>Historique versions</h2><p>Historique importé jusqu’à V34.</p></div>${table(['Version','Date','Objet','Impact'],rows)}`;
+    document.querySelector('#historique').innerHTML = `<div class="page-title"><h2>Historique versions</h2><p>Historique importé jusqu’à ${esc(CONFIG.version)}.</p></div>${table(['Version','Date','Objet','Impact'],rows)}`;
   };
   renderAudit = function () {
-    const rows = (meta.audit || []).filter(r => r.some(v => v !== null && v !== '')).map(r => ({cells:r.map(esc)}));
-    document.querySelector('#audit').innerHTML = `<div class="page-title"><h2>Audit V34</h2><p>Audit intégral V33 complété par le contrôle de cohérence mensuelle des événements V34.</p></div>${table(['Zone contrôlée','Constat initial','Correction appliquée','Résultat','Niveau','Commentaire','Date'],rows)}`;
+    const clean = (meta.audit || []).filter(r => r.some(v => v !== null && v !== ''));
+    const controls = clean.filter(r => !String(r[0] || '').startsWith('CAN-')).map(r => ({cells:r.map(esc)}));
+    const additions = clean.filter(r => String(r[0] || '').startsWith('CAN-')).map(r => ({cells:r.map(esc)}));
+    const additionsBlock = additions.length ? `<div class="card pad" style="margin-top:18px"><div class="section-header"><h3>Candidatures ajoutées</h3><small>${additions.length} lignes V35</small></div>${table(['ID candidature','Date candidature','Entreprise','Poste','Canal','Source donnée','Statut final'],additions,'table-orange')}</div>` : '';
+    document.querySelector('#audit').innerHTML = `<div class="page-title"><h2>Audit ${esc(CONFIG.version)}</h2><p>Audit et traçabilité de la version ${esc(CONFIG.version)}.</p></div><div class="card pad"><div class="section-header"><h3>Contrôles de mise à jour</h3><small>source ${esc(CONFIG.updatedAt)}</small></div>${table(['Zone contrôlée','Constat / action','Résultat','Niveau','Volume','Commentaire','Date'],controls,'table-green')}</div>${additionsBlock}`;
   };
 
   renderEntretiens(); renderGmail(); renderHistorique(); renderAudit(); renderStatistiques(); renderQualite(); renderDashboard(); renderCandidatures();
