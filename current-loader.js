@@ -86,8 +86,11 @@
     document.querySelector('#historique').innerHTML = `<div class="page-title"><h2>Historique versions</h2><p>Historique importé jusqu’à ${esc(CONFIG.version)}.</p></div>${table(['Version','Date','Objet','Impact'],rows)}`;
   };
   renderAudit = function () {
-    const rows = (meta.audit || []).filter(r => r.some(v => v !== null && v !== '')).map(r => ({cells:r.map(esc)}));
-    document.querySelector('#audit').innerHTML = `<div class="page-title"><h2>Audit ${esc(CONFIG.version)}</h2><p>Audit et traçabilité de la version ${esc(CONFIG.version)}.</p></div>${table(['Zone contrôlée','Constat initial','Correction appliquée','Résultat','Niveau','Commentaire','Date'],rows)}`;
+    const clean = (meta.audit || []).filter(r => r.some(v => v !== null && v !== ''));
+    const controls = clean.filter(r => !String(r[0] || '').startsWith('CAN-')).map(r => ({cells:r.map(esc)}));
+    const additions = clean.filter(r => String(r[0] || '').startsWith('CAN-')).map(r => ({cells:r.map(esc)}));
+    const additionsBlock = additions.length ? `<div class="card pad" style="margin-top:18px"><div class="section-header"><h3>Candidatures ajoutées</h3><small>${additions.length} lignes V35</small></div>${table(['ID candidature','Date candidature','Entreprise','Poste','Canal','Source donnée','Statut final'],additions,'table-orange')}</div>` : '';
+    document.querySelector('#audit').innerHTML = `<div class="page-title"><h2>Audit ${esc(CONFIG.version)}</h2><p>Audit et traçabilité de la version ${esc(CONFIG.version)}.</p></div><div class="card pad"><div class="section-header"><h3>Contrôles de mise à jour</h3><small>source ${esc(CONFIG.updatedAt)}</small></div>${table(['Zone contrôlée','Constat / action','Résultat','Niveau','Volume','Commentaire','Date'],controls,'table-green')}</div>${additionsBlock}`;
   };
 
   renderEntretiens(); renderGmail(); renderHistorique(); renderAudit(); renderStatistiques(); renderQualite(); renderDashboard(); renderCandidatures();
